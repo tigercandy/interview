@@ -87,19 +87,19 @@ __wakeup() // unserialize()函数会检查是否存在一个__wakeup()方法，�
 
 四，各种排序算法。
 
-- 快速排序。[源码](./src/ algorithms/quickSort.php)
+- 快速排序。[源码](./src/algorithms/quickSort.php)
 
   > 最坏情况出现在每次切分所选的切分元素总是当前切分数组的最小值时，因为其在排序过程中，会交换元素打乱数组原本的相对顺序，所以快速排序是不稳定的算法。
   >
   > 最坏时间复杂度：O(n^2)，平均时间复杂度：O(n*log2n)。
 
-- 冒泡排序。[源码](./src/ algorithms/bubbleSort.php)
+- 冒泡排序。[源码](./src/algorithms/bubbleSort.php)
 
   > 时间复杂度：O(n^2)。
 
 五，Excel给定一个数据，如何查到它在第几列？(excel头部有规律：A | B | C | D | E | …… | Z | AA | AB | AC | AD | AE | …… | AZ | ……)
 
-六，打印目录结构。[源码](./src/ algorithms/loopDir.php)
+六，打印目录结构。[源码](./src/algorithms/loopDir.php)
 
 #### 系统设计
 

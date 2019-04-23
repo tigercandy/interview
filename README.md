@@ -40,11 +40,132 @@
 
 > composer加载核心思想是通过composer的配置文件在引用入口文件(autoload.php)时,将类和路径的对应关系加载到内存中,最后将具体加载的实现注册到spl_autoload_register函数中.最后将需要的文件包含进来.
 
-##### 五，PHP数组的底层实现。自己如何去实现？
+##### 五，PHP数组的底层实现。自己如何去实现？[参考](https://juejin.im/post/5bce1c35518825781f7b0935)
+
+> PHP数组底层数据结构式 哈希表结构。
+
+```c++
+typedef struct _zend_array HashTable;
+
+struct _zend_array {
+	// gc 保存引用计数，内存管理相关；本文不涉及
+	zend_refcounted_h gc;
+	// u 储存辅助信息；本文不涉及
+	union {
+		struct {
+			ZEND_ENDIAN_LOHI_4(
+				zend_uchar    flags,
+				zend_uchar    nApplyCount,
+				zend_uchar    nIteratorsCount,
+				zend_uchar    consistency)
+		} v;
+		uint32_t flags;
+	} u;
+	// 用于散列函数
+	uint32_t          nTableMask;
+	// arData 指向储存元素的数组第一个 Bucket，Bucket 为统一的数组元素类型
+	Bucket           *arData;
+	// 已使用 Bucket 数
+	uint32_t          nNumUsed;
+	// 数组内有效元素个数
+	uint32_t          nNumOfElements;
+	// 数组总容量
+	uint32_t          nTableSize;
+	// 内部指针，用于遍历
+	uint32_t          nInternalPointer;
+	// 下一个可用数字索引
+	zend_long         nNextFreeElement;
+	// 析构函数
+	dtor_func_t       pDestructor;
+};
+```
+
+> 既然是hashtable结构，正常的hashtable应该是无序的，而php数组是如何实现有序的呢？
+>
+> 为了实现 HashTable 的有序性，PHP 为其增加了一张**中间映射表**，该表是一个大小与 Bucket 相同的数组，数组中储存整形数据，用于保存元素实际储存的 Value 在 Bucekt 中的下标。注意，加入了中间映射表后，**Bucekt 中的数据是有序的，而中间映射表中的数据是无序的**。这样顺序读取时只需要访问 Bucket 中的数据即可。
 
 ##### 六，一个请求到PHP，Nginx的主要过程。完整描述整个网络请求过程，原理。
 
+[FastCGI、php-fpm的关系](https://www.mantis.vip/posts/2018-02-27-%E6%90%9E%E4%B8%8D%E6%87%82%E7%9A%84PHP-FPM-Fast-CGI%E4%B8%8EPHP%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB.html)。
+
+工作流程：
+
+> 1)、FastCGI进程管理器php-fpm自身初始化，启动主进程php-fpm和启动start_servers个CGI 子进程。主进程php-fpm主要是管理fastcgi子进程，监听9000端口。fastcgi子进程等待来自Web Server的连接。
+>
+> 2)、当客户端请求到达Web Server Nginx是时，Nginx通过location指令，将所有以php为后缀的文件都交给127.0.0.1:9000来处理，即Nginx通过location指令，将所有以php为后缀的文件都交给127.0.0.1:9000来处理。
+>
+> 3）FastCGI进程管理器PHP-FPM选择并连接到一个子进程CGI解释器。Web server将CGI环境变量和标准输入发送到FastCGI子进程。
+>
+> 4)、FastCGI子进程完成处理后将标准输出和错误信息从同一连接返回Web Server。当FastCGI子进程关闭连接时，请求便告处理完成。
+>
+> 5)、FastCGI子进程接着等待并处理来自FastCGI进程管理器（运行在 WebServer中）的下一个连接。
+
 ##### 七，fpm的配置，动/静态，参数相关。
+
+```nginx
+pid = /usr/local/var/run/php-fpm.pid
+#pid设置，一定要开启,上面是Mac平台的。默认在php安装目录中的var/run/php-fpm.pid。比如centos的在: /usr/local/php/var/run/php-fpm.pid
+error_log  = /usr/local/var/log/php-fpm.log
+#错误日志，上面是Mac平台的，默认在php安装目录中的var/log/php-fpm.log，比如centos的在: /usr/local/php/var/log/php-fpm.log
+log_level = notice
+#错误级别. 上面的php-fpm.log纪录的登记。可用级别为: alert（必须立即处理）, error（错误情况）, warning（警告情况）, notice（一般重要信息）, debug（调试信息）. 默认: notice.
+emergency_restart_threshold = 60
+emergency_restart_interval = 60s
+#表示在emergency_restart_interval所设值内出现SIGSEGV或者SIGBUS错误的php-cgi进程数如果超过 emergency_restart_threshold个，php-fpm就会优雅重启。这两个选项一般保持默认值。0 表示 '关闭该功能'. 默认值: 0 (关闭).
+process_control_timeout = 0
+#设置子进程接受主进程复用信号的超时时间. 可用单位: s(秒), m(分), h(小时), 或者 d(天) 默认单位: s(秒). 默认值: 0.
+daemonize = yes
+#后台执行fpm,默认值为yes，如果为了调试可以改为no。在FPM中，可以使用不同的设置来运行多个进程池。 这些设置可以针对每个进程池单独设置。
+listen = 127.0.0.1:9000
+#fpm监听端口，即nginx中php处理的地址，一般默认值即可。可用格式为: 'ip:port', 'port', '/path/to/unix/socket'. 每个进程池都需要设置。如果nginx和php在不同的机器上，分布式处理，就设置ip这里就可以了。
+listen.backlog = -1
+#backlog数，设置 listen 的半连接队列长度，-1表示无限制，由操作系统决定，此行注释掉就行。backlog含义参考：http://www.3gyou.cc/?p=41
+listen.allowed_clients = 127.0.0.1
+#允许访问FastCGI进程的IP白名单，设置any为不限制IP，如果要设置其他主机的nginx也能访问这台FPM进程，listen处要设置成本地可被访问的IP。默认值是any。每个地址是用逗号分隔. 如果没有设置或者为空，则允许任何服务器请求连接。
+listen.owner = www
+listen.group = www
+listen.mode = 0666
+#unix socket设置选项，如果使用tcp方式访问，这里注释即可。
+user = www
+group = www
+#启动进程的用户和用户组，FPM 进程运行的Unix用户, 必须要设置。用户组，如果没有设置，则默认用户的组被使用。
+pm = dynamic 
+#php-fpm进程启动模式，pm可以设置为static和dynamic和ondemand
+#如果选择static，则进程数就数固定的，由pm.max_children指定固定的子进程数。
+#如果选择dynamic，则进程数是动态变化的,由以下参数决定：
+pm.max_children = 50 #子进程最大数
+pm.start_servers = 2 #启动时的进程数，默认值为: min_spare_servers + (max_spare_servers - min_spare_servers) / 2
+pm.min_spare_servers = 1 #保证空闲进程数最小值，如果空闲进程小于此值，则创建新的子进程
+pm.max_spare_servers = 3 #，保证空闲进程数最大值，如果空闲进程大于此值，此进行清理
+pm.max_requests = 500
+#设置每个子进程重生之前服务的请求数. 对于可能存在内存泄漏的第三方模块来说是非常有用的. 如果设置为 '0' 则一直接受请求. 等同于 PHP_FCGI_MAX_REQUESTS 环境变量. 默认值: 0.
+pm.status_path = /status
+#FPM状态页面的网址. 如果没有设置, 则无法访问状态页面. 默认值: none. munin监控会使用到
+ping.path = /ping
+#FPM监控页面的ping网址. 如果没有设置, 则无法访问ping页面. 该页面用于外部检测FPM是否存活并且可以响应请求. 请注意必须以斜线开头 (/)。
+ping.response = pong
+#用于定义ping请求的返回相应. 返回为 HTTP 200 的 text/plain 格式文本. 默认值: pong.
+access.log = log/$pool.access.log
+#每一个请求的访问日志，默认是关闭的。
+access.format = "%R - %u %t \"%m %r%Q%q\" %s %f %{mili}d %{kilo}M %C%%"
+#设定访问日志的格式。
+slowlog = log/$pool.log.slow
+#慢请求的记录日志,配合request_slowlog_timeout使用，默认关闭
+request_slowlog_timeout = 10s
+#当一个请求该设置的超时时间后，就会将对应的PHP调用堆栈信息完整写入到慢日志中. 设置为 '0' 表示 'Off'
+request_terminate_timeout = 0
+#设置单个请求的超时中止时间. 该选项可能会对php.ini设置中的'max_execution_time'因为某些特殊原因没有中止运行的脚本有用. 设置为 '0' 表示 'Off'.当经常出现502错误时可以尝试更改此选项。
+rlimit_files = 1024
+#设置文件打开描述符的rlimit限制. 默认值: 系统定义值默认可打开句柄是1024，可使用 ulimit -n查看，ulimit -n 2048修改。
+rlimit_core = 0
+#设置核心rlimit最大限制值. 可用值: 'unlimited' 、0或者正整数. 默认值: 系统定义值.
+chroot =
+#启动时的Chroot目录. 所定义的目录需要是绝对路径. 如果没有设置, 则chroot不被使用.
+chdir =
+#设置启动目录，启动时会自动Chdir到该目录. 所定义的目录需要是绝对路径. 默认值: 当前目录，或者/目录（chroot时）
+catch_workers_output = yes
+#重定向运行过程中的stdout和stderr到主要的错误日志文件中. 如果没有设置, stdout 和 stderr 将会根据FastCGI的规则被重定向到 /dev/null . 默认值: 空.
+```
 
 ##### 八，php多进程如何实现？[PHP多进程编程](https://www.mantis.vip/posts/2018-05-26-PHP%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B.html)
 
@@ -67,15 +188,42 @@ __wakeup() // unserialize()函数会检查是否存在一个__wakeup()方法，�
 
 ##### 一，MySQL底层的数据结构是什么？最左前缀的原理。
 
+> b+树的数据项是复合的数据结构，比如(name,age,sex)的时候，b+树是按照从左到右的顺序来建立搜索树的，比如当(张三,20,F)这样的数据来检索的时候，b+树会优先比较name来确定下一步的所搜方向，如果name相同再依次比较age和sex，最后得到检索的数据；但当(20,F)这样的没有name的数据来的时候，b+树就不知道第一步该查哪个节点，因为建立搜索树的时候name就是第一个比较因子，必须要先根据name来搜索才能知道下一步去哪里查询.
+
 ##### 二，使用索引时需要注意的点有哪些？
 
+> - 不要再查询语句中使用函数计算
+> - 索引列不要参与计算
+> - like查询%key%不走索引，key%走索引
+> - 字符串与数字比较时，不使用索引
+> - 如果条件中有or,即使其中有条件带索引也不会使用
+> - 索引要建立在经常进行select操作的字段上
+> - 索引不会包含有NULL的列；只要列中包含有NULL值，都将不会被包含在索引中，复合索引中只要有一列含有NULL值，那么这一列对于此符合索引就是无效的。
+> - mysql查询只使用一个索引，因此如果where子句中已经使用了索引的话，那么order by中的列是不会使用索引的。因此数据库默认排序可以符合要求的情况下不要使用排序操作，尽量不要包含多个列的排序，如果需要最好给这些列建复合索引。
+> - 不使用NOT IN 、<>、！=操作，但<,<=，=，>,>=,BETWEEN,IN是可以用到索引的
+> - 对于那些定义为text、image和bit数据类型的列不应该增加索引。因为这些列的数据量要么相当大，要么取值很少
+
 ##### 三，MySQL底层原理：为什么select*有问题？大字段索引有问题？
+
+> 大字段类型，如text类型的字段建立索引需指定前缀索引长度。如：```alter table test add indexidx_text(aaa(10))```。
 
 ##### 四，有过哪些优化MySQL的经验？
 
 ##### 五，数据量大的表分页偏移值越大为什么查询越慢？跟底层原理有关。
 
+> MySQL在分页查询时并非是跳过偏移值取后面的数据，而是先把偏移值+要取得条数，然后再把偏移量这一段的数据抛弃掉在返回。所以偏移值越大查询就越慢。
+>
+> 优化方案：使用where id > offset代替limit offset。如：
+>
+> ```select * from user limit 1000000,3;```改为 ```select * from user where id > 1000000 limit 3;```
+
 ##### 六，MySQL主从同步延迟如何处理？
+
+> - 主从同步的原理：主库会把所有的DDL和DML产生binlog，binlog是顺序写的，效率较高。从库的IO线程(5.6.3之前是单个IO线程，5.3.6之后有多个线程，速度有提升)会去读取主库的binlog并且写到从库的Relay log里面，然后从服务器的SQL thread会一个一个的执行Relay log里面的sql语句，恢复数据。
+>
+> - 主从延迟的原因：1）大量的并发操作写入，当某个SQL在从服务器上执行的时间稍长或者由于某个SQL要进行锁表就会导致延迟，主库的SQL大量积压，未被同步到从库里，导致延迟。2）硬件条件如磁盘IO、CPU、内存等各方面原因造成复制延迟。3）慢SQL语句过多导致延迟。
+>
+> - 解决方案：1）主库负责更新操作，对安全性要求较高，所以有些设置可以修改如：sync_binlog=1等，从库对数据安全性没有那么高，可以设置sync_binlog=0或者直接关闭binlog，innodb_flushlog、innodb_flush_log_at_trx_commit设置为0可以很大程度上提高效率。2）从库使用较好的硬件设备。3）对数据是实性要求非常高的数据可以在写入主库时可以将数据直接返回而不用再去查从库。
 
 ##### 七，如何分析SQL语句用到了哪些索引，如果是复合索引是否都用到了。
 
@@ -120,17 +268,31 @@ explain select * from user_auth where ucid = 2000000023473725;
 
 ##### 二，Linux的I/O多路复用。
 
+> IO多路复用就是我们说的select、poll、epoll。select/epoll好处在于单个process可以同时处理多个网络连接的IO. 基本原理是select、poll、epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达时，就通知用户进程。
+
 ##### 三，进程，线程，协程是什么？如何切换的？
+
+> 进程和线程的主要区别是：进程独享地址空间和资源，线程则共享地址空间和资源，多线程就是多栈。
+>
+> 1、进程
+>
+> 进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动,进程是系统进行资源分配和调度的一个独立单位。每个进程都有自己的独立内存空间，不同进程通过进程间通信来通信。由于进程比较重量，占据独立的内存，所以上下文进程间的切换开销（栈、寄存器、虚拟内存、文件句柄等）比较大，但相对比较稳定安全。
+>
+> 2、线程
+>
+> 线程是进程的一个实体,是CPU调度和分派的基本单位,它是比进程更小的能独立运行的基本单位.线程自己基本上不拥有系统资源,只拥有一点在运行中必不可少的资源(如程序计数器,一组寄存器和栈),但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源。线程间通信主要通过共享内存，上下文切换很快，资源开销较少，但相比进程不够稳定容易丢失数据。
+>
+> 3、协程
+>
+> 协程是一种用户态的轻量级线程，协程的调度完全由用户控制。协程拥有自己的寄存器上下文和栈。协程调度切换时，将寄存器上下文和栈保存到其他地方，在切回来的时候，恢复先前保存的寄存器上下文和栈，直接操作栈则基本没有内核切换的开销，可以不加锁的访问全局变量，所以上下文的切换非常快。
 
 ### Nginx
 
 ##### 一，Nginx性能优化；openresty相关等。
 
-##### 二，PHP请求是如何到Nginx服务器的。
+##### 二，服务器负载均衡的实现。
 
-##### 三，服务器负载均衡的实现。
-
-##### 四，Nginx的I/O模型。
+##### 三，Nginx的I/O模型。
 
 ### 算法
 
@@ -142,7 +304,7 @@ explain select * from user_auth where ucid = 2000000023473725;
 
 2）字符81816816816消除后是81。
 
-##### 三，最小公共子串。
+##### 三，最长公共子串。[源码](./src/algorithms/maxComStr.php)
 
 ##### 四，各种排序算法。
 
@@ -156,11 +318,30 @@ explain select * from user_auth where ucid = 2000000023473725;
 
   > 时间复杂度：O(n^2)。
 
-##### 五，Excel给定一个数据，如何查到它在第几列？(excel头部有规律：A | B | C | D | E | …… | Z | AA | AB | AC | AD | AE | …… | AZ | ……)
+- 插入排序。[源码](./src/algorithms/insertSort.php)
 
-##### 六，打印目录结构。[源码](./src/algorithms/loopDir.php)
+  > 时间复杂度：O(n^2)，空间复杂度O(1)。
 
-##### 七，二叉树遍历(先根、中根、后根)。[源码](./src/algorithms/BinaryTree.php)
+- 选择排序。[源码](./src/algorithms/selectSort.php)
+
+  > 时间复杂度O(n^2),空间复杂度O(1)。
+
+- 希尔排序。[源码](./src/algorithms/shellSort.php)
+
+  > 时间复杂度O(n^2)，平均时间复杂度O(n*log2n),空间复杂度O(1) 。
+
+##### 五，各种查找算法。
+
+- 二分查找。时间复杂度：O(log2n)。[源码](./src/algorithms/binarySearch.php)
+- 顺序查找。时间复杂度：O(n)。[源码](./src/algorithms/sequenceSearch.php)
+
+##### 六，Excel给定一个数据，如何查到它在第几列？(excel头部有规律：A | B | C | D | E | …… | Z | AA | AB | AC | AD | AE | …… | AZ | ……)
+
+##### 七，打印目录结构。[源码](./src/algorithms/loopDir.php)
+
+##### 八，二叉树遍历(先根、中根、后根)。[源码](./src/algorithms/BinaryTree.php)
+
+##### 九，二叉树反转/镜像。
 
 ### 系统设计
 

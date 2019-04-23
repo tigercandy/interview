@@ -1,8 +1,8 @@
 <?php
 /*
 				  A
-			B           C
-		D       E    F      G
+			B                  C
+		D              E     F            G
 	H
 */
 class BinaryTree

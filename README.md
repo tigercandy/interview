@@ -101,6 +101,8 @@ __wakeup() // unserialize()函数会检查是否存在一个__wakeup()方法，�
 
 六，打印目录结构。[源码](./src/algorithms/loopDir.php)
 
+七，二叉树遍历(先根、中根、后根)。[源码](./src/algorithms/BinaryTree.php)
+
 #### 系统设计
 
 一，短链接如何设计？

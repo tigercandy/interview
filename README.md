@@ -341,7 +341,7 @@ explain select * from user_auth where ucid = 2000000023473725;
 
 ##### 八，二叉树遍历(先根、中根、后根)。[源码](./src/algorithms/BinaryTree.php)
 
-##### 九，二叉树反转/镜像。
+##### 九，二叉树反转/镜像。[源码](./src/algorithms/reverseTree.php)
 
 ### 系统设计
 

@@ -258,6 +258,28 @@ explain select * from user_auth where ucid = 2000000023473725;
 
 >  注意：varchar最大字节数为：65535。这里的最大是指整张表varchar的总大小。
 
+##### 九，MySQL索引字段类型问题。
+
+```sql
+CREATE TABLE `test_01` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+    `ucid` varchar(30) NOT NULL,
+    `name` varchar(20) DEFAULT NULL,
+    PRIMARY KEY(`id`),
+    KEY `idx_ucid` (`ucid`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8
+```
+
+对于上述表结构，我们执行如下SQL：
+
+```sql
+explain select * from `test_01` where ucid = 2000000000088491;
+```
+
+> 发现并没有用到索引，这是因为```ucid```字段是varchar类型的，查询时使用的是int类型，这里会有一个隐式转换的问题，隐式转换会导致全表扫描。
+>
+> 注意：如果表定义的是int类型的，传入的是字符串，则不会发生隐式转换。
+
 ### Redis
 
 ##### 一，Redis五大数据类型对应的底层数据结构是什么？
@@ -335,7 +357,23 @@ explain select * from user_auth where ucid = 2000000023473725;
 - 二分查找。时间复杂度：O(log2n)。[源码](./src/algorithms/binarySearch.php)
 - 顺序查找。时间复杂度：O(n)。[源码](./src/algorithms/sequenceSearch.php)
 
-##### 六，Excel给定一个数据，如何查到它在第几列？(excel头部有规律：A | B | C | D | E | …… | Z | AA | AB | AC | AD | AE | …… | AZ | ……)
+##### 六，Excel给定一个数据，如何查到它在第几列？(excel头部有规律：A | B | C | D | E | …… | Z | AA | AB | AC | AD | AE | …… | AZ | ……) [源码](./src/algorithms/excelFindCol.php)
+
+1 -> A  
+
+2 -> B 
+
+3 -> C
+
+…...
+
+26 -> Z
+
+27 -> AA
+
+28 -> AB
+
+….
 
 ##### 七，打印目录结构。[源码](./src/algorithms/loopDir.php)
 

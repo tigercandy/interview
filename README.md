@@ -184,6 +184,12 @@ __sleep() // serialize()函数会检查类中是否存在一个魔术方法__sle
 __wakeup() // unserialize()函数会检查是否存在一个__wakeup()方法，如果存在，则会先调用该方法，然后再执行反序列化操作。__wakeup() 经常用在反序列化操作中，例如重新建立数据库连接，或执行其它初始化操作。
 ```
 
+##### 十，打印目录结构。[源码](./src/php/loopDir.php)
+
+##### 十一，实现字符串反转函数。[源码](./src/php/reverseStr.php)
+
+##### 十二，PHP实现一个双向队列。[源码](./src/php/Deque.php)
+
 ### MySQL
 
 ##### 一，MySQL底层的数据结构是什么？最左前缀的原理。
@@ -375,11 +381,17 @@ explain select * from `test_01` where ucid = 2000000000088491;
 
 ….
 
-##### 七，打印目录结构。[源码](./src/algorithms/loopDir.php)
+##### 七，二叉树遍历(先根、中根、后根)。[源码](./src/algorithms/BinaryTree.php)
 
-##### 八，二叉树遍历(先根、中根、后根)。[源码](./src/algorithms/BinaryTree.php)
+##### 八，二叉树反转/镜像。[源码](./src/algorithms/reverseTree.php)
 
-##### 九，二叉树反转/镜像。[源码](./src/algorithms/reverseTree.php)
+##### 九，猴子选大王(约瑟夫环)。[源码](./src/algorithms/MonkeyKing.php)
+
+##### 十，求两个链表的第一个公共节点。[源码](./src/algorithms/ListFirstCommonNode.php)
+
+##### 十一，求n以内的质数。[源码](./src/algorithms/prime.php)
+
+##### 十二，判断两个有序数组是否有公共元素。[源码](./src/algorithms/common.php)
 
 ### 系统设计
 

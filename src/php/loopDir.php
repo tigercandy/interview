@@ -2,6 +2,10 @@
 
 // 遍历目录下的文件及文件夹
 
+// https://php.net/manual/zh/function.opendir.php
+// opendir ( string $path [, resource $context ] ) : resource
+// opendir成功返回目录句柄的resource，失败返回FALSE.
+
 function loopDir($dir)
 {
 	$files = [];

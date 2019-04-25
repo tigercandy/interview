@@ -190,6 +190,16 @@ __wakeup() // unserialize()函数会检查是否存在一个__wakeup()方法，�
 
 ##### 十二，PHP实现一个双向队列。[源码](./src/php/Deque.php)
 
+##### 十三，常用的设计模式。[参考](https://www.mantis.vip/posts/2017-07-11-php-design-pattern.html)
+
+##### 十四，字符编码UTF8、GBK、GB2312的区别。
+
+> utf8是国际编码。通用性较好。
+>
+> gbk是国内编码。通用型较utf8差，但是占用数据库比utf8小。
+>
+> gb2312是一个简体中文字符集的中国国家标准，共收录6763个汉字。
+
 ### MySQL
 
 ##### 一，MySQL底层的数据结构是什么？最左前缀的原理。
@@ -294,7 +304,7 @@ explain select * from `test_01` where ucid = 2000000000088491;
 
 ### Redis
 
-##### 一，Redis五大数据类型对应的底层数据结构是什么？
+##### 一，Redis五大数据类型对应的底层数据结构是什么？[参考](https://www.cnblogs.com/jaycekon/p/6227442.html)
 
 ### Linux
 
@@ -324,7 +334,7 @@ explain select * from `test_01` where ucid = 2000000000088491;
 
 ##### 一，Nginx性能优化；openresty相关等。
 
-##### 二，服务器负载均衡的实现。
+##### 二，服务器负载均衡的实现。[参考](https://www.mantis.vip/posts/2017-07-24-%E3%80%90Nginx%E3%80%91%E5%AE%9E%E7%8E%B0%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95.html)
 
 ##### 三，Nginx的I/O模型。
 

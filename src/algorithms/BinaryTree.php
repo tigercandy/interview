@@ -92,4 +92,24 @@ function tailLoop($root)
 	}
 }
 
-preLoop($a);
+// 二叉树的左视角
+function leftNode($root)
+{
+	$stack[] = $root;
+	$return = [];
+	while (!empty($stack)) {
+		$leftNode = array_shift($stack);
+		if ($leftNode->right != null) {
+			$stack[] = $leftNode->right;
+		}
+		if ($leftNode->left != null) {
+			$stack[] = $leftNode->left;
+		}
+		$return[] = $leftNode->data;
+	}
+	return $return;
+}
+
+//preLoop($a);
+
+print_r(leftNode($a));

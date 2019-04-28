@@ -306,6 +306,8 @@ explain select * from `test_01` where ucid = 2000000000088491;
 
 ##### 一，Redis五大数据类型对应的底层数据结构是什么？[参考](https://www.cnblogs.com/jaycekon/p/6227442.html)
 
+##### 二，Redis Sentinel哨兵模式。[参考](https://juejin.im/post/5b7d226a6fb9a01a1e01ff64)
+
 ### Linux
 
 ##### 一，分析access.log日志中前100的url。

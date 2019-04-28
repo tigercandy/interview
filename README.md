@@ -44,7 +44,7 @@
 
 > PHP数组底层数据结构式 哈希表结构。
 
-```c++
+```c
 typedef struct _zend_array HashTable;
 
 struct _zend_array {
@@ -420,3 +420,5 @@ explain select * from `test_01` where ucid = 2000000000088491;
 ##### 三，LRU如何实现？[参考](https://www.twblogs.net/a/5b7f0b662b717767c6ad6c42/zh-cn)
 
 ##### 四，订单表订单ID如何设计生成？[Leaf——美团点评分布式ID生成系统](https://tech.meituan.com/2017/04/21/mt-leaf.html)
+
+##### 五，一致性hash问题。[参考](https://www.jianshu.com/p/e8fb89bb3a61)

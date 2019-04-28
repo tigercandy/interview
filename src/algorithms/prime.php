@@ -11,10 +11,12 @@ function prime($n)
 				break;
 			}
 		}
-		if ($i > $sqrt) {
+		if ($j > $sqrt) {
 			array_push($prime, $i);
 		}
 	}
 
 	return $prime;
 }
+
+print_r(prime(100));

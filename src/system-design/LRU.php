@@ -76,7 +76,7 @@ class LRU
 	public function attach($head, $node)
 	{
 		$node->setPrevious($head);
-		$nodeToRemove->setNext($head->getNext());
+		$node->setNext($head->getNext());
 		$node->getNext()->setPrevious($node);
 		$node->getPrevious()->setNext($node);
 	}

@@ -31,11 +31,11 @@ class Deque
 	// 清空队列
 	public function removeEmpty()
 	{
-		return unset($queue);
+		unset($queue);
 	}
 
 	// 获取队列长度
-	public function getLen()
+	public function getLen($queue)
 	{
 		return count($queue);
 	}

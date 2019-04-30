@@ -11,7 +11,7 @@ function loopDir($dir)
 	$files = [];
 	if (@$handle = opendir($dir)) {
 		$file = readdir($handle);
-		while (($file = readdir($handle)) !=== false) {
+		while (($file = readdir($handle)) !== false) {
 			if ($file != '.' && $file != '..') {
 				if (is_dir($file)) {
 					$files[$file] = loopDir($file);

@@ -15,7 +15,7 @@ class LRU
 		$this->head = new Node(null, null);
 		$this->tail = new Node(null, null);
 
-		$this-<head->setNext($this->tail);
+		$this->head->setNext($this->tail);
 		$this->tail->setPrevious($this->previous);
 	}
 

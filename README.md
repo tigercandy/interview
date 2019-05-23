@@ -302,6 +302,8 @@ explain select * from `test_01` where ucid = 2000000000088491;
 >
 > InnDB存储引擎：在相同的情况下，select不带order by会根据主键来排序，从小到大。
 
+##### 十一，MySQL多个索引列使用的顺序是怎样的？如users，中有普通索引name，age，email，sql语句select * from users where name = 'jack' and age = 20 and email = 'xxxx@gmail.com'；
+
 ### Redis
 
 ##### 一，Redis五大数据类型对应的底层数据结构是什么？[参考](https://www.cnblogs.com/jaycekon/p/6227442.html)
@@ -412,6 +414,8 @@ explain select * from `test_01` where ucid = 2000000000088491;
 ##### 十二，判断两个有序数组是否有公共元素。[源码](./src/algorithms/common.php)
 
 ##### 十三，单链表反转。[源码](./src/algorithms/LinkList.php)
+
+##### 十四，给定一棵二叉树，知道它的根节点$root，某个节点$kNode，找出与$kNode高度相差$k的所有节点。
 
 ### 系统设计
 

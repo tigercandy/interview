@@ -34,7 +34,7 @@
 
 ##### 二，PHP类自动加载原理。[参考](https://learnku.com/articles/4681/analysis-of-the-principle-of-php-automatic-loading-function)
 
-##### 三，Laravel源码相关。比如容器是如何实现的？
+##### 三，Laravel源码相关。比如容器是如何实现的？[参考](https://segmentfault.com/a/1190000008892574)
 
 ##### 四，Composer是如何实现自动加载的？[参考](https://zhuanlan.zhihu.com/p/30785203)
 

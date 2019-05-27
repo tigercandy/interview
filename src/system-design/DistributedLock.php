@@ -24,8 +24,8 @@ if (empty($result)) {
 			$redis->expire($lockKey, $lockExpire);
 			if ($redis->ttl($lockKey)) {
 				$redis->del($lockKey);
-				$status = false;
 			}
+			$status = false;
 		} else {
 			// TODO
 

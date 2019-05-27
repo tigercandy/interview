@@ -311,6 +311,8 @@ explain select * from `test_01` where ucid = 2000000000088491;
 
 ##### 二，Redis Sentinel哨兵模式。[参考](https://juejin.im/post/5b7d226a6fb9a01a1e01ff64)
 
+##### 三，Redis分布式锁的实现。[参考](https://www.cnblogs.com/wenxiong/p/3954174.html)
+
 ### Linux
 
 ##### 一，分析access.log日志中前100的url。
@@ -372,6 +374,8 @@ explain select * from `test_01` where ucid = 2000000000088491;
 - UDP逻辑通信信道是不可靠信道
 - UDP没有拥塞机制，因此网络出现拥堵不会使源主机的发送效率降低
 - UDP支持一对一，多对一，多对多的交互通信
+
+##### 三，TCP连接三次握手、四次挥手。[参考](https://blog.csdn.net/qq_38950316/article/details/81087809)
 
 ### 算法
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
-基于Redis实现分布式锁
+* 基于Redis实现分布式锁
 */
 
 $lockKey = 'LOCK:' . $program; // 设置锁key
@@ -16,7 +16,7 @@ if (empty($result)) {
 		// 设置锁值为当前时间+有效期
 		$lockValue = time() + $lockExpire;
 		/**
-		创建锁
+		* 创建锁
 		*/
 		$lock = $redis->setnx($lockKey, $lockValue);
 

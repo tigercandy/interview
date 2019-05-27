@@ -305,6 +305,8 @@ explain select * from `test_01` where ucid = 2000000000088491;
 
 ##### 十一，MySQL多个索引列使用的顺序是怎样的？如users，中有普通索引name，age，email，sql语句select * from users where name = 'jack' and age = 20 and email = 'xxxx@gmail.com'；
 
+##### 十二，MySQL编码utf8和utf8mb4，Emoji表情需要使用utf8mb4来存储。[参考](http://ourmysql.com/archives/1402)
+
 ### Redis
 
 ##### 一，Redis五大数据类型对应的底层数据结构是什么？[参考](https://www.cnblogs.com/jaycekon/p/6227442.html)

@@ -1,11 +1,13 @@
 * [PHP](#php)
 * [MySQL](#mysql)
 * [Redis](#redis)
+* [Kafka](#kafka)
 * [Linux](#linux)
 * [Nginx](#nginx)
 * [网络](#网络)
 * [算法](#算法)
 * [系统设计](#系统设计)
+* [其他](#其他)
 
 ### PHP
 
@@ -201,6 +203,9 @@ __wakeup() // unserialize()函数会检查是否存在一个__wakeup()方法，�
 >
 > gb2312是一个简体中文字符集的中国国家标准，共收录6763个汉字。
 
+##### 十五，PHP代码运行原理。
+##### 
+
 ### MySQL
 
 ##### 一，MySQL底层的数据结构是什么？最左前缀的原理。
@@ -307,6 +312,10 @@ explain select * from `test_01` where ucid = 2000000000088491;
 
 ##### 十二，MySQL编码utf8和utf8mb4，Emoji表情需要使用utf8mb4来存储。[参考](http://ourmysql.com/archives/1402)
 
+##### 十三，MySQL建表注意事项。
+
+##### 十四，做过哪些MySQL的优化工作。自由发挥。
+
 ### Redis
 
 ##### 一，Redis五大数据类型对应的底层数据结构是什么？[参考](https://www.cnblogs.com/jaycekon/p/6227442.html)
@@ -314,6 +323,20 @@ explain select * from `test_01` where ucid = 2000000000088491;
 ##### 二，Redis Sentinel哨兵模式。[参考](https://juejin.im/post/5b7d226a6fb9a01a1e01ff64)
 
 ##### 三，Redis分布式锁的实现。[参考](https://www.cnblogs.com/wenxiong/p/3954174.html)
+
+##### 四，Redis用过哪些数据结构。自由发挥。
+
+##### 五，Redis集群如何做。
+
+##### 六，Redis集群如何插入一台新机器。
+
+##### 七，Redis集群如何查数据在哪台机器。
+
+### Kafka
+
+##### 一，Kafka消息类型有哪些。
+
+##### 二，Kafka的pub/sub消息类型如何保证消息送达。
 
 ### Linux
 
@@ -338,6 +361,16 @@ explain select * from `test_01` where ucid = 2000000000088491;
 > 3、协程
 >
 > 协程是一种用户态的轻量级线程，协程的调度完全由用户控制。协程拥有自己的寄存器上下文和栈。协程调度切换时，将寄存器上下文和栈保存到其他地方，在切回来的时候，恢复先前保存的寄存器上下文和栈，直接操作栈则基本没有内核切换的开销，可以不加锁的访问全局变量，所以上下文的切换非常快。
+
+##### 四，nginx.log文件格式如下，统计当天某个接口的uv。
+```shell
+2019/05/28 10:00:01 127.0.0.1 GET /api/user/22 ......
+2019/05/28 10:00:01 10.33.148.143 GET /api/user/22 ......
+2019/05/28 10:00:01 127.0.0.1 GET /api/user/22 ......
+2019/05/28 10:00:01 10.22.16.65 GET /api/user/22 ......
+2019/05/28 10:00:01 127.0.0.1 GET /api/user/22 ......
+```
+
 
 ### Nginx
 
@@ -465,5 +498,10 @@ explain select * from `test_01` where ucid = 2000000000088491;
 ##### 三，LRU如何实现？[参考](https://www.twblogs.net/a/5b7f0b662b717767c6ad6c42/zh-cn)
 
 ##### 四，订单表订单ID如何设计生成？[Leaf——美团点评分布式ID生成系统](https://tech.meituan.com/2017/04/21/mt-leaf.html)
+
+### 其他
+
+##### 一，工作中遇到过比较难的问题是什么？如何解决的？
+##### 二，比较有成就感的项目、难点。
 
 ##### 五，一致性hash问题。[参考](https://www.jianshu.com/p/e8fb89bb3a61)

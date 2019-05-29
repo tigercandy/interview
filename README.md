@@ -412,6 +412,8 @@ explain select * from `test_01` where ucid = 2000000000088491;
 
 ##### 三，TCP连接三次握手、四次挥手。[参考](https://blog.csdn.net/qq_38950316/article/details/81087809)
 
+##### 四，TCP如何保证可靠传输。[参考](https://blog.csdn.net/cmm0401/article/details/77878998)
+
 ### 算法
 
 ##### 一，找出数组中出现一次的元素。10 10 11 11 12 13 12 13 16 只出现一次的数字。要求时间复杂度尽可能低。

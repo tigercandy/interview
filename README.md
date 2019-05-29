@@ -412,7 +412,7 @@ explain select * from `test_01` where ucid = 2000000000088491;
 
 ##### 三，TCP连接三次握手、四次挥手。[参考](https://blog.csdn.net/qq_38950316/article/details/81087809)
 
-##### 四，TCP如何保证可靠传输。[参考](https://blog.csdn.net/cmm0401/article/details/77878998)
+##### 四，TCP如何保证可靠传输。[参考](https://blog.csdn.net/liuchenxia8/article/details/80428157)
 
 ### 算法
 

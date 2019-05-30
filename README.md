@@ -371,6 +371,9 @@ explain select * from `test_01` where ucid = 2000000000088491;
 2019/05/28 10:00:01 127.0.0.1 GET /api/user/22 ......
 ```
 
+```shell
+cat nginx.log | grep "/api/user/" | awk '{print $3}' | sort | uniq -c | sort -nr | wc -l
+```
 
 ### Nginx
 

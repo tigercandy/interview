@@ -496,7 +496,7 @@ cat nginx.log | grep "/api/user/" | awk '{print $3}' | sort | uniq -c | sort -nr
 
 ##### 十六，两个有序链表合并成一个有序链表。[源码](./src/algorithms/MergeLinkList.php)
 
-##### 十七，一个无序不重复的数组$arr，找出所有$arr[$i] + $arr[$j] + $arr[$k] = $m的元素。
+##### 十七，一个无序不重复的数组$arr，找出所有$arr[$i] + $arr[$j] + $arr[$k] = $m的元素。[源码](./src/algorithms/threeSum.php)
 
 ### 系统设计
 

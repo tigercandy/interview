@@ -1,32 +1,32 @@
 <?php
 
-function threeSum($arrs, $m)
+function threeSum($arr, $m)
 {
-    $count = count($arrs);
+    $count = count($arr);
     if ($count < 3) {
         return [];
     }
-    sort($arrs);
+    sort($arr);
     $res = [];
     for ($i = 0; $i < $count - 2; $i++) {
-        if ($i > 0 && $arrs[$i] == $arrs[$i - 1]) {
+        if ($i > 0 && $arr[$i] == $arr[$i - 1]) {
             continue;
         }
-        $target = $m - $arrs[$i];
+        $target = $m - $arr[$i];
         $j = $i + 1;
         $k = $count - 1;
         while ($j < $k) {
-            if ($arrs[$j] + $arrs[$k] == $target) {
-                $res[] = [$arrs[$i], $arrs[$j], $arrs[$k]];
-                while ($j < $k && $arrs[$j] == $arrs[$j + 1]) {
+            if ($arr[$j] + $arr[$k] == $target) {
+                $res[] = [$arr[$i], $arr[$j], $arr[$k]];
+                while ($j < $k && $arr[$j] == $arr[$j + 1]) {
                     ++$j;
                 }
-                while ($j < $k && $arrs[$k] == $arrs[$k - 1]) {
+                while ($j < $k && $arr[$k] == $arr[$k - 1]) {
                     --$k;
                 }
                 ++$j;
                 --$k;
-            } elseif ($arrs[$j] + $arrs[$k] < $target) {
+            } elseif ($arr[$j] + $arr[$k] < $target) {
                 ++$j;
             } else {
                 --$k;
